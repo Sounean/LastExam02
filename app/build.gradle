@@ -1,0 +1,41 @@
+apply plugin: 'com.android.application'
+def config =rootProject.ext
+android {
+    compileOptions {
+        // 让AS支持JAVA8特性。
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    compileSdkVersion config.android.compileSdkVersion
+    buildToolsVersion config.android.buildToolsVersion
+    defaultConfig {
+        applicationId "com.example.lastexam02"
+        minSdkVersion config.android.minSdkVersion
+        targetSdkVersion config.android.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    testCompile config.dependencies["junit"]
+    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+    implementation project(path: ':lib-base')
+    implementation project(path: ':IM-app')
+    implementation project(path: ':easeui')
+    //在壳中，导入各业务组件即可。
+    if (isIMModule.toBoolean()) {
+        compile project(":IM-app")
+    }
+}

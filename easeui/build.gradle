@@ -1,0 +1,55 @@
+apply plugin: 'com.android.library'
+def config =rootProject.ext
+android {
+    android {
+        //use legacy for android > 6.0
+        useLibrary 'org.apache.http.legacy'
+    }
+    compileSdkVersion config.android.compileSdkVersion
+    buildToolsVersion config.android.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion config.android.minSdkVersion
+        targetSdkVersion config.android.targetSdkVersion
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [moduleName: project.getName()]
+            }
+        }
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
+
+}
+
+dependencies {
+    //release时需要把hyphenatechatsdk的依赖注释掉，sdk已经被打成jar包放在libs底下
+//    //api project(':hyphenatechatsdk')
+	api 'com.hyphenate:hyphenate-sdk:3.6.1'
+    api fileTree(dir: 'libs', include: ['*.jar'])
+    api 'com.github.bumptech.glide:glide:4.7.1'
+
+    api 'com.google.android.gms:play-services-base:11.4.0'
+
+    testImplementation('androidx.test.espresso:espresso-core:3.1.0', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    api 'androidx.appcompat:appcompat:1.0.0'
+    testCompile config.dependencies["junit"]
+    //在基础组件中，需要导入路由的运行期、编译期依赖库。
+    compile config.dependencies["arouter-api"]
+    annotationProcessor config.dependencies["arouter-compiler"]
+}

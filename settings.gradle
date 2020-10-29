@@ -1,0 +1,2 @@
+include ':app', ':lib-base', ':easeuitest', ':IM-app', ':easeui'
+rootProject.name='LastExam02'
